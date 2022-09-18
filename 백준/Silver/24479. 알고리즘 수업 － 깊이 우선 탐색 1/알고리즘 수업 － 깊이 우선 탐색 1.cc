@@ -1,52 +1,49 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <algorithm>
+#include<iostream>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
-
-vector<vector<int>> graph;
-vector<bool>visited;
-vector<int> point;
-
-int N, M;
+int n, m, r;
 int index = 0;
 
-void init();
-void dfs(int R);
+void init(vector<int> graph[]);
+void dfs(int start, vector<int>graph[], bool visited[], int saved[]);
 
 int main() {
-	int R;
-	scanf("%d %d %d", &N, &M, &R);
+	scanf("%d %d %d", &n, &m, &r);
 
-	init();
-	dfs(R);
+	vector<int>* graph = new vector<int>[n + 1];
+	bool* visited = new bool[n+1];
+	int* saved = new int[n+1];
+	fill(visited, visited + n + 1, false);
+	fill(saved, saved + n + 1, 0);
 
-	for (int i = 1; i <= N; i++) printf("%d\n", point[i]);
+	init(graph);
+	dfs(r, graph, visited, saved);
+	for (int i = 1; i <= n; i++) printf("%d\n", saved[i]);
 }
 
-void init() {
-	graph.resize(N+1);//1차원크기 N+1로 확대
-	visited.resize(N + 1);
-	point.resize(N + 1);
-
-	int tmp1, tmp2;
-	for (int i = 0; i < M; i++)
-	{
+void init(vector<int> graph[]) {
+	for (int i = 0; i < m; i++) {
+		int tmp1, tmp2;
 		scanf("%d %d", &tmp1, &tmp2);
 
-		graph[tmp1].push_back(tmp2); 
+		graph[tmp1].push_back(tmp2);
 		graph[tmp2].push_back(tmp1);
 	}
 
-	for (int i = 0; i <= N; i++) sort(graph[i].begin(), graph[i].end()); //오름차순 정렬 시작정점으로부터.
+	for (int i = 1; i <= n; i++) {
+		sort(graph[i].begin(), graph[i].end());
+	}
 }
 
-void dfs(int R) {
-	point[R] = ++index;
-	visited[R] = true;
+void dfs(int start, vector<int>graph[], bool visited[], int saved[]) {
+	visited[start] = true;
+	saved[start] = ++index;
 
-	for (int i = 0; i<graph[R].size(); i++) {
-		int tmp = graph[R][i];
-		if (visited[tmp] == false) dfs(tmp);
+	for (int i = 0; i < graph[start].size(); i++) {
+		int next = graph[start][i];
+		if (visited[next] != true) dfs(next, graph, visited, saved);
 	}
 }
