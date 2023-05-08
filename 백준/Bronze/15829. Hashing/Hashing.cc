@@ -12,16 +12,15 @@ int M = 1234567891;
 int L = 0;
 string input;
 
-long long int total = 0;
+unsigned long long int total = 0;
 
 int main() {
 	scanf("%d", &L);
 	cin >> input;
 
 	for (int i = 0; i < L; i++) {
-		int alpha = input[i] - 'a' + 1;
-		long long int result = alpha * (int)pow(r, i);
-		total += result;
+		unsigned long long int alpha = input[i] - 'a' + 1;
+		total += alpha * (int)pow(r, i);
 	}
 
 	printf("%lld", total);
