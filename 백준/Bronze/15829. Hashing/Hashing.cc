@@ -1,13 +1,12 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <cmath>
 #include <string>
 using namespace std;
 
 //-'a'+1
 
 int r = 31;
-int M = 1234567891;
+unsigned long long int M = 1234567891;
 
 int L = 0;
 string input;
@@ -20,8 +19,13 @@ int main() {
 
 	for (int i = 0; i < L; i++) {
 		unsigned long long int alpha = input[i] - 'a' + 1;
-		total += alpha * (int)pow(r, i);
+		unsigned long long int tmp_r = 1;
+		for (int j = 0; j < i; j++) {
+			tmp_r *= r;
+			tmp_r %= M;
+		}
+		total += (alpha * tmp_r);
 	}
 
-	printf("%lld", total);
+	printf("%lld", total%M);
 }
