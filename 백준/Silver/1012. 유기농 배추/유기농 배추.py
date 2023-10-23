@@ -3,37 +3,14 @@ input = sys.stdin.readline
 sys.setrecursionlimit(10**6)
 
 def solution(l, v):
-    #상
-    if l+x[0] >= 0:
-        next_x = l+x[0]
-        next_y = v+y[0]
-        if board[next_x][next_y] and not visit[next_x][next_y]:
-            visit[next_x][next_y] = 1
-            solution(next_x, next_y)
 
-    #하    
-    if l+x[1] < N:
-        next_x = l+x[1]
-        next_y = v+y[1]
-        if board[next_x][next_y] and not visit[next_x][next_y]:
-            visit[next_x][next_y] = 1
-            solution(next_x, next_y)
-
-    #좌
-    if v+y[2] >= 0:
-        next_x = l+x[2]
-        next_y = v+y[2]
-        if board[next_x][next_y] and not visit[next_x][next_y]:
-            visit[next_x][next_y] = 1
-            solution(next_x, next_y)
-
-    #우
-    if v+y[3] < M:
-        next_x = l+x[3]
-        next_y = v+y[3]
-        if board[next_x][next_y] and not visit[next_x][next_y]:
-            visit[next_x][next_y] = 1
-            solution(next_x, next_y)     
+    for order in range(4):
+        next_x = l+x[order]
+        next_y = v+y[order]
+        if next_x >= 0 and next_x < N and next_y >= 0 and next_y < M:
+            if board[next_x][next_y] and not visit[next_x][next_y]:
+                visit[next_x][next_y] = 1
+                solution(next_x, next_y)
 
     return        
 
