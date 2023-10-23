@@ -6,43 +6,14 @@ def solution(i, j):
     
     global cnt
 
-    #상
-    if i+x[0] >= 0:
-        new_x = i+x[0]
-        new_y = j+y[0]
-        # 1이면서 이동 가능할 때
-        if board[new_x][new_y] and not visit[new_x][new_y]:
-            cnt += 1 #개수 세기
-            visit[new_x][new_y] = 1 #방문 처리
-            solution(new_x, new_y)
-    
-    #하
-    if i+x[1] < N:
-        new_x = i+x[1]
-        new_y = j+y[1]
-        #1이면서 이동 가능할 때
-        if board[new_x][new_y] and not visit[new_x][new_y]:
-            cnt += 1
-            visit[new_x][new_y] = 1 
-            solution(new_x, new_y)
-    
-    #좌
-    if j+y[2] >= 0:
-        new_x = i+x[2]
-        new_y = j+y[2]
-        if board[new_x][new_y] and not visit[new_x][new_y]:
-            cnt += 1
-            visit[new_x][new_y] = 1
-            solution(new_x, new_y)
-
-    #우
-    if j+y[3] < N:
-        new_x = i+x[3]
-        new_y = j+y[3]
-        if board[new_x][new_y] and not visit[new_x][new_y]:
-            cnt += 1
-            visit[new_x][new_y] = 1
-            solution(new_x, new_y)
+    for order in range(4):
+        new_x = i+x[order]
+        new_y = j+y[order]
+        if new_x >= 0 and new_x < N and new_y >= 0 and new_y < N :
+            if board[new_x][new_y] and not visit[new_x][new_y]:
+                cnt += 1 #개수 세기
+                visit[new_x][new_y] = 1 #방문 처리
+                solution(new_x, new_y)
 
     return
 
