@@ -22,9 +22,13 @@ def solution():
 
 width, height = map(int, input().split())
 
-tomato_box = [list(map(int, input().split())) for _ in range(height)]
+tomato_box = list()
 deque= deque()
 max_day = 0
+
+for h in range(height):
+    width_list = list(map(int,input().split(' ')))
+    tomato_box.append(width_list)
 
 for h in range(height):
     for w in range(width):
