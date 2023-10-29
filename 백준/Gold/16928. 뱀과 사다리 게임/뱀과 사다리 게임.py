@@ -2,7 +2,6 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-board = [i for i in range(101)]
 visit = [0 for _ in range(101)]
 
 n, m = map(int, input().split())
