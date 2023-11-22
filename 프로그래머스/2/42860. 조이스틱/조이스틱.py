@@ -16,8 +16,7 @@ def solution(name):
         next = index + 1
         while next < len(name) and name[next] == 'A': next += 1
         
+        #이 부분 답 보았고, 지금도 이해 잘 안 됨
         rightleft_cnt = min([ rightleft_cnt, 2 * index + len(name) - next, index + 2 * (len(name) - next) ])
         
-        
-    answer = updown_cnt + rightleft_cnt    
-    return answer
+    return updown_cnt + rightleft_cnt    
