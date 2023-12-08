@@ -5,9 +5,18 @@ n = int(input())
 arr = list(map(int, input().split()))
 
 m = int(input())
-answer = []
+sums = [arr[0]]
 
+#누적합 배열
+for i in range(1, n):
+    sums.append(arr[i]+sums[-1])
+
+#더하기
 for i in range(m):
     start, end = map(int, input().split())
-    section = arr[start-1:end]
-    print(sum(section))
+    
+    if start == 1:
+        print(sums[end-1])
+
+    else:
+        print(sums[end-1]-sums[start-2])
