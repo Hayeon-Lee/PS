@@ -1,3 +1,11 @@
+'''
+dfs, bfs 막 해보다가 그럴 필요 없다는 것 깨닫고 하나하나 해보고
+치킨집 파업 여부 체크 사용했다가 오류 생기고 시간 오래걸리는 바람에 combinations 사용
+
+코드 최적화는 
+이 분 풀이법 참고함 -> (https://codesyun.tistory.com/185)
+'''
+
 from itertools import combinations
 import sys
 input = sys.stdin.readline
