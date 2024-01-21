@@ -1,39 +1,46 @@
-from itertools import permutations
 import sys
+from itertools import permutations
+input = sys.stdin.readline
 
-N = int(input())
-nums = list(map(int, input().split()))
-tmp = list(map(int, input().split()))
+n = int(input())
+numbers = list(map(int, input().split()))
+operators_cnt = list(map(int, input().split()))
+oper = ['+', '-', '*', '/']
 
-# +, -, *, /
-op_num = '+' * tmp[0] + '-' * tmp[1] + '*' * tmp[2] + '/' * tmp[3]
-op = [i for i in op_num]
-op = permutations(op, N - 1) # 순열
-op = list(set(op)) # 중복 제거
+operators = []
 
-max = -sys.maxsize
-min = sys.maxsize
+for i in range(len(operators_cnt)):
+    for _ in range(operators_cnt[i]):
+        operators.append(oper[i])
 
-for i in op:
-    result = nums[0]
-    for j in range(N - 1):
-        if i[j] == '+':
-            result += nums[j + 1]
-        elif i[j] == '-':
-            result -= nums[j + 1]            
-        elif i[j] == '*':
-            result *= nums[j + 1]
-        else: # 나눗셈
-            if result < 0:
-                result *= -1
-                result //= nums[j + 1]
-                result *= -1
+operators = list(set(permutations(operators, n-1)))
+
+max_value = -sys.maxsize
+min_value = sys.maxsize
+
+for oper in operators:
+
+    tmp = numbers[0]
+    for i in range(n-1):
+        if oper[i] == '+':
+            tmp += numbers[i+1]
+        elif oper[i] == '-':
+            tmp -= numbers[i+1]
+        elif oper[i] == '*':
+            tmp *= numbers[i+1]
+        else:
+            if tmp < 0:
+                tmp *= -1
+                tmp //= numbers[i+1]
+                tmp *= -1
             else:
-                result //= nums[j + 1]
-    if result >= max:
-        max = result
-    if result < min:
-        min = result
+                tmp //= numbers[i+1]
+    
+    if tmp >= max_value:
+        max_value = tmp
+    
+    if tmp < min_value:
+        min_value = tmp
 
-print(max)
-print(min)
+print(max_value)
+print(min_value)    
