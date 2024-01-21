@@ -36,11 +36,8 @@ for oper in operators:
             else:
                 tmp //= numbers[i+1]
     
-    if tmp >= max_value:
-        max_value = tmp
+    max_value = max(max_value, tmp)
+    min_value = min(min_value, tmp)
     
-    if tmp < min_value:
-        min_value = tmp
-
 print(max_value)
 print(min_value)    
