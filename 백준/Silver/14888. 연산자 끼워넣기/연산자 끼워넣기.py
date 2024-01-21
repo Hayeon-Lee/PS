@@ -1,43 +1,41 @@
 import sys
-from itertools import permutations
 input = sys.stdin.readline
 
 n = int(input())
 numbers = list(map(int, input().split()))
-operators_cnt = list(map(int, input().split()))
-oper = ['+', '-', '*', '/']
-
-operators = []
-
-for i in range(len(operators_cnt)):
-    for _ in range(operators_cnt[i]):
-        operators.append(oper[i])
-
-operators = list(set(permutations(operators, n-1)))
+plus, minus, multiple, divide = map(int, input().split())
 
 max_value = -sys.maxsize
 min_value = sys.maxsize
 
-for oper in operators:
+def dfs(i, now):
+    global min_value, max_value, plus, minus, multiple, divide
 
-    tmp = numbers[0]
-    for i in range(n-1):
-        if oper[i] == '+':
-            tmp += numbers[i+1]
-        elif oper[i] == '-':
-            tmp -= numbers[i+1]
-        elif oper[i] == '*':
-            tmp *= numbers[i+1]
-        else:
-            if tmp < 0:
-                tmp *= -1
-                tmp //= numbers[i+1]
-                tmp *= -1
-            else:
-                tmp //= numbers[i+1]
+    if i==n:
+        min_value = min(min_value, now)
+        max_value = max(max_value, now)
     
-    max_value = max(max_value, tmp)
-    min_value = min(min_value, tmp)
-    
+    else:
+        if plus > 0:
+            plus -= 1
+            dfs(i+1, now + numbers[i])
+            plus += 1
+        
+        if minus > 0:
+            minus -= 1
+            dfs(i+1, now-numbers[i])
+            minus += 1
+        
+        if multiple > 0:
+            multiple -= 1
+            dfs(i+1, now*numbers[i])
+            multiple += 1
+        
+        if divide > 0:
+            divide -= 1
+            dfs(i+1, int(now/numbers[i]))
+            divide += 1
+
+dfs(1, numbers[0])
 print(max_value)
-print(min_value)    
+print(min_value)
