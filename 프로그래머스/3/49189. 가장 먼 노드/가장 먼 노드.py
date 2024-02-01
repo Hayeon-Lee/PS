@@ -25,12 +25,13 @@ def solution(n, edge):
     
     bfs(graph, visit, distance)
     
-    maximum = max(distance)
     distance = sorted(distance, reverse=True)
-    answer = 0
+    maximum = distance[0]
     
-    for d in distance:
+    answer = 1
+    for d in distance[1:]:
         if d == maximum:
             answer += 1
-    
+        else:
+            break
     return answer
