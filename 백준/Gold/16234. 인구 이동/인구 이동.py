@@ -2,84 +2,69 @@ import sys
 from collections import deque
 input = sys.stdin.readline
 
-#입력
 n, l, r = map(int, input().split())
-country = []
-visit = [[False]*n for _ in range(n)]
 
-for _ in range(n):
+country = []
+for i in range(n):
     tmp = list(map(int, input().split()))
     country.append(tmp)
 
-#상하좌우
-dx = [-1, 1, 0, 0]
-dy = [0, 0, -1, 1]
+def bfs(country, visit, check_country, total_moving_country):
+    dx = [-1, 1, 0, 0]
+    dy = [0, 0, -1, 1]
+    moving_country = deque()
+    new_pop = 0
 
-#bfs
-def bfs():
-    global queue, union_country, people, cnt, unions, change_value
+    while check_country:
+        nx, ny = check_country.popleft()
+        if new_pop == 0:
+            new_pop = country[nx][ny]
 
-    while queue:
-        x, y = queue.popleft()
+        for k in range(4):
+            x = nx + dx[k]
+            y = ny + dy[k]
 
-        for i in range(4):
-            nx = x+dx[i]
-            ny = y+dy[i]
-            if 0<=nx<n and 0<=ny<n and visit[nx][ny]==False:
-                diff = abs(country[x][y]-country[nx][ny])
-                if l<=diff<=r:
-                    visit[nx][ny] = True
-                    people += country[nx][ny]
-                    cnt += 1
-                    union_country.append((nx,ny))
-                    queue.append((nx, ny))
+            if 0<=x<n and 0<=y<n and visit[x][y]==False:
+                diff = abs(country[nx][ny] - country[x][y])
+                if l <= diff <= r: 
+                    visit[x][y] = True 
+                    new_pop += country[x][y]
 
-    if len(union_country)>1: 
-        unions.append(union_country) #움직여야 할 연합국
-        change_value.append(people//cnt) #바뀔 값
+                    if len(moving_country) == 0:
+                        moving_country.append((nx,ny))
+                    moving_country.append((x,y)) #인구이동 해야 할 나라
 
-#인구이동
-def moving():
-    while unions:
-        moving_deque = unions.popleft()
-        value = change_value.popleft()
+                    check_country.append((x,y)) #bfs를 위해 저장하는 나라
 
-        while moving_deque:
-            x, y = moving_deque.popleft()    
-            country[x][y] = value
+    if len(moving_country)!=0:
+        moving_country.append((new_pop//len(moving_country)))
+        total_moving_country.append(moving_country)
 
+def moving(country, total_moving_country):
+    while total_moving_country:
+        m_c = total_moving_country.popleft()
+        popularity = m_c.pop()
 
-queue = deque()
-union_country = deque()
-unions = deque()
-
-change_value = deque()
-people = 0 #총 국민 수
-cnt = 0 #나라 수
-flag = 1
+        while m_c:
+            cx, cy = m_c.popleft()
+            country[cx][cy] = popularity
 
 answer = 0
-
 while True:
+    visit = [[False] * (n) for _ in range(n)]
+    check_country = deque()
+    total_moving_country = deque()
+
     for i in range(n):
         for j in range(n):
             if visit[i][j] == False:
-
-                people = country[i][j] #인구값
-                cnt = 1 #나라 개수
-
-                queue.append((i,j)) #bfs 큐
-                union_country.append((i,j)) #연합국 큐
+                check_country.append((i, j))
                 visit[i][j] = True
-                bfs()
+                bfs(country, visit, check_country, total_moving_country)
 
-                queue = deque() #초기화
-                union_country = deque() #초기화 
-
-    if unions:
-        moving()
+    if total_moving_country:
+        moving(country, total_moving_country)
         answer += 1
-        visit = [[False]*n for _ in range(n)]
 
     else:
         break
