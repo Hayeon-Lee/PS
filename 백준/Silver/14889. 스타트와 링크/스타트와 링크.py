@@ -7,28 +7,23 @@ for i in range(n):
     tmp = list(map(int, input().split()))
     group.append(tmp)
 
-team = combinations([i for i in range(1, n+1)], n//2)
+member = [i for i in range(1, n+1)]
+start_team = combinations([i for i in range(1, n+1)], n//2)
 
 answer = 1e9
-for t in team:
-    check = [False] * (n+1)
+for st in start_team:
+    start, link = 0, 0
 
-    start = 0 #True
-    link = 0 #False
+    lt = list(set(member) - set(st))
 
-    for p in t:
-        check[p] = True
+    for s in combinations(st, 2):
+        start += group[s[0]-1][s[1]-1]
+        start += group[s[1]-1][s[0]-1]
 
-    for i in range(1, n+1):
-        now_team = check[i]
+    for l in combinations(lt, 2):
+        link += group[l[0]-1][l[1]-1]
+        link += group[l[1]-1][l[0]-1]
 
-        for j in range(1, n+1):
-            if i!=j and check[j] == now_team: #같은 팀이면
-                if now_team == True:
-                    start += group[i-1][j-1]
-                if now_team == False:
-                    link += group[i-1][j-1]
-    
     answer = min(answer, abs(start-link))
 
 print(answer)
