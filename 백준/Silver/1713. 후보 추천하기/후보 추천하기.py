@@ -1,29 +1,19 @@
-from heapq import *
+import heapq
 
-N = int(input())
-student_num = int(input())
-student_list = list(map(int, input().split()))
-pic_heap = list()
+frame = int(input())
+good = int(input())
+student = list(map(int, input().split()))
 
-for idx, num in enumerate(student_list) :
-  tmp_heap = list()
-  flg = 0 
-  
-  while pic_heap :
-    cnt, old_idx, std_num = heappop(pic_heap)
-    cnt += 1 if std_num == num else 0
-    heappush(tmp_heap, (cnt, old_idx, std_num))
-    flg += std_num == num
+s_dict = {}
+for s in student:
+    if s not in s_dict:
+        if len(s_dict) >= frame:
+            tmp = heapq.nsmallest(min(s_dict), s_dict, key=s_dict.get)
+            s_dict.pop(tmp[0])
 
-  if not flg and len(tmp_heap) >= N :
-    heappop(tmp_heap)
+        s_dict[s] = 1
+    else:
+        s_dict[s] += 1
 
-  if not flg :
-    heappush(tmp_heap, (0, idx, num))
-  pic_heap = tmp_heap
-
-  
-answer_list = [ x[-1] for x in pic_heap]
-answer_list.sort()
-
-print(*answer_list)
+answer = sorted(s_dict.keys())
+print(*answer)
