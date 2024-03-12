@@ -1,94 +1,93 @@
-import sys
 from collections import deque
+
+import sys
 input = sys.stdin.readline
 
+#입력 받기
 n, m = map(int, input().split())
+
 board = []
-
-directions = {
-    #방향: [x, y]
-    1:[0, -1], #좌
-    2:[-1, -1], #좌측위
-    3:[-1, 0], #상
-    4:[-1, 1], #우측위
-    5:[0, 1], #우
-    6:[1, 1], #우측아래
-    7:[1, 0], #하
-    8:[1, -1] #좌측아래
-}
-
 for i in range(n):
-    board.append(list(map(int, input().split())))
+    tmp = list(map(int, input().split()))
+    board.append(tmp)
 
-moving_list = []
+moving = []
 for i in range(m):
     d, s = map(int, input().split())
-    moving_list.append((d,s))
+    moving.append((d, s))
 
+#문제 풀이 시작
 def cloud_moving(d, s):
-    global cloud, bug_loc
+    dx = direction_x[d-1]
+    dy = direction_y[d-1]
+    bug_cloud = []
 
-    dx = directions[d][0]
-    dy = directions[d][1]
+    for j in range(len(cloud)):
+        nx, ny = cloud[j]
 
-    for i in range(len(cloud)):
-        nx, ny = cloud[i]
+        # 이동
+        nx = (nx + (dx*s)) % n
+        ny = (ny + (dy*s)) % n
 
-        nx = (nx + dx*s) % n 
-        ny = (ny + dy*s) % n
-        cloud[i][0] = nx
-        cloud[i][1] = ny
+        # 버그가 발생하는 구름 생성
+        bug_cloud.append((nx, ny))
+    
+    return bug_cloud
 
-        bug_loc.append((nx, ny))
+def raining(bug_cloud):
+    global cant_cloud
+    cant_cloud = [[False]*n for _ in range(n)]
 
-def rain():
-    global cloud, board, visit
-    for i in range(len(cloud)):
-        cx, cy = cloud[i][0], cloud[i][1]
-        board[cx][cy]+=1
-        visit[cx][cy] = True
+    for j in range(len(bug_cloud)):
+        x, y = bug_cloud[j]
+        board[x][y] += 1 #비가 내린다
+        cant_cloud[x][y] = True # 구름이 사라진 칸은 구름이 생길 수 없다
 
-def water_copy_bug():
-    global board, bug_loc
+def copy_bug(bug_cloud):
+    bug_direction_x = [-1, -1, 1, 1]
+    bug_direction_y = [-1, 1, 1, -1]
 
-    bug_dx = [-1, -1, 1, 1]
-    bug_dy = [-1, 1, -1, 1]
+    for j in range(len(bug_cloud)):
+        x, y = bug_cloud[j]
+        cnt = 0
 
-    while bug_loc:
-        bx, by = bug_loc.popleft()
-
+        #대각선 방향으로 거리가 1인 바구니에 물이 있는지 확인
         for k in range(4):
-            nbx = bx + bug_dx[k]
-            nby = by + bug_dy[k]
+            nx = x + bug_direction_x[k]
+            ny = y + bug_direction_y[k]
 
-            if 0<=nbx<n and 0<=nby<n and board[nbx][nby] > 0:
-                board[bx][by] += 1
+            if 0<=nx<n and 0<=ny<n:
+                if board[nx][ny] > 0:
+                    cnt += 1
+        
+        board[x][y] += cnt
 
 def make_new_cloud():
-    global board, visit, cloud
+    global cloud
+    cloud = []
 
-    for i in range(n):
-        for j in range(n):
-            if board[i][j] >= 2 and visit[i][j] == False:
-                cloud.append([i, j])
-                board[i][j] -= 2
+    for j in range(n):
+        for k in range(n):
+            if board[j][k] >= 2 and not cant_cloud[j][k]:
+                cloud.append((j,k))
+                board[j][k] -= 2
 
-cloud = [[n-1,0],[n-1,1], [n-2, 0], [n-2,1]] #초기 구름 위치
 
-visit = [[False] * n for _ in range(n)]
-bug_loc = deque()
+cloud = [[n-1, 0], [n-1, 1], [n-2, 0], [n-2, 1]]
+cant_cloud = []
 
-for m_l in moving_list:
-    d, s = m_l
-    cloud_moving(d, s) #구름 이동
-    rain() #비가 온다
-    cloud = [] #구름이 모두 사라진다
-    water_copy_bug()
-    make_new_cloud()
-    visit = [[False] * n for _ in range(n)]
-    
+direction_x = [0, -1, -1, -1, 0, 1, 1, 1]
+direction_y = [-1, -1, 0, 1, 1, 1, 0, -1]
 
-answer = 0
+for i in range(m):
+    d, s = moving[i]
+
+    bug_cloud = cloud_moving(d, s) #구름 이동
+    raining(bug_cloud) #비 옴
+    copy_bug(bug_cloud) #비바라기 스킬
+    make_new_cloud() #새 구름 만들기
+
+answer = 0 
 for i in range(n):
     for j in range(n):
         answer += board[i][j]
