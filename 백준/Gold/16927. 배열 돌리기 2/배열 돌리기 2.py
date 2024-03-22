@@ -1,37 +1,35 @@
-NN, MM, R = map(int, input().split())
-arr = [list(map(int, input().split())) for _ in range(NN)]
-
+import sys
 from collections import deque
-depth = min(NN, MM)//2
-move = [[0, 1], [1, 0], [0, -1], [-1, 0]]
-for d in range(depth):
-    r, c = d, d
-    N = NN - d*2
-    M = MM - d*2
-    q = deque()
-    for dr, dc in move:
-        while True:
-            nr, nc = r+dr, c+dc
-            if d<=nr<d+N and d<=nc<d+M:
-                q.append(arr[nr][nc])
-                r, c = nr, nc
-            else:
-                break
 
-    # rotate
-    rotate = R % (2*(N-1)+2*(M-1))
-    for _ in range(rotate):
-        q.append(q.popleft())
+input = sys.stdin.readline
+
+n, m, r = map(int, input().split())
+
+arr = []
+answer = [[0]*m for _ in range(n)]
+queue = deque()
+
+for i in range(n):
+    arr.append(list(input().split()))
+
+repeat = min(n, m) // 2
+for i in range(repeat):
+    queue.clear()
+    queue.extend(arr[i][i:m-i])
+    queue.extend([row[m-i-1] for row in arr[i+1:n-i-1]])
+    queue.extend(arr[n-i-1][i:m-i][::-1])
+    queue.extend([row[i] for row in arr[i+1:n-i-1]][::-1])
     
-    # write at arr
-    for dr, dc in move:
-        while True:
-            nr, nc = r+dr, c+dc
-            if d<=nr<d+N and d<=nc<d+M:
-                arr[nr][nc] = q.popleft()
-                r, c = nr, nc
-            else:
-                break
+    queue.rotate(-r)
+    
+    for j in range(i, m-i):                 # 위쪽
+        answer[i][j] = queue.popleft()
+    for j in range(i+1, n-i-1):             # 오른쪽
+        answer[j][m-i-1] = queue.popleft()
+    for j in range(m-i-1, i-1, -1):           # 아래쪽
+        answer[n-i-1][j] = queue.popleft()  
+    for j in range(n-i-2, i, -1):           # 왼쪽
+        answer[j][i] = queue.popleft()    
 
-for row in arr:
-    print(' '.join(map(str, row)))
+for line in answer:
+    print(" ".join(line))
