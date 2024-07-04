@@ -11,36 +11,43 @@ using namespace std;
 #define LEFT 2
 #define RIGHT 3
 
+int length = 0;
 int dx[4] = {-1, 1, 0, 0};
 int dy[4] = {0, 0, -1, 1}; 
 
-typedef struct pos {
-    int x;
-    int y;
-    int cost;
-    int direction;
-} Pos;
+struct Pos {
+    int x, y, cost, direction;
+};
 
-
-typedef struct compare {
-    bool operator()(const Pos &a, const Pos& b) {
+struct Compare {
+    bool operator()(const Pos &a, const Pos &b) {
         return a.cost > b.cost;
     }
-} Compare;
+};
 
-int solution(vector<vector<int>> board) {
-    int answer = 0;
-    int n = board.size();
-    int cost[25][25][4];
-    
-    for(int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < 4; k++) {
+bool check(int nx, int ny, vector<vector<int>> board){
+    if (nx < 0 || nx >= length || ny < 0 || ny >= length || board[nx][ny] == 1) return false;
+    return true;
+}
+
+void initialize(int (&cost)[25][25][4]){
+    for(int i=0; i<length; i++){
+        for (int j=0; j<length; j++){
+            for (int k=0; k<4; k++) {
                 cost[i][j][k] = INF;
             }
         }
     }
-    for (int i = 0; i < 4; i++) cost[0][0][i] = 0; // 출발지의 방향을 초기화
+    
+    for (int i=0; i<4; i++) cost[0][0][i] = 0; //출발지의 방향을 초기화 
+}
+
+int solution(vector<vector<int>> board) {
+    int answer = 0;
+    
+    length = board.size();
+    int cost[25][25][4];
+    initialize(cost);
     
     priority_queue<Pos, vector<Pos>, Compare> pq;
     pq.push({0, 0, 0, -1}); //x, y, cost, direction
@@ -49,13 +56,13 @@ int solution(vector<vector<int>> board) {
         Pos now = pq.top();
         pq.pop();
         
-        for (int i=0; i<4; ++i){
+        for (int i=0; i<4; i++){
             int nx = now.x + dx[i];
             int ny = now.y + dy[i];
             int nd = i;
             int nc = now.cost;
             
-            if (nx < 0 || nx >= n || ny < 0 || ny >= n || board[nx][ny] == 1) continue;
+            if (!check(nx, ny, board)) continue;
             
             nc += 100;
             if (now.direction == UP || now.direction == DOWN) {
@@ -72,6 +79,6 @@ int solution(vector<vector<int>> board) {
         }
     }
     
-    answer = *min_element(cost[n-1][n-1], cost[n-1][n-1]+4);
+    answer = *min_element(cost[length-1][length-1], cost[length-1][length-1]+4);
     return answer;
 }
