@@ -115,10 +115,6 @@ vector<string> solution(vector<string> files) {
     sort(strip_infos.begin(), strip_infos.end(), compare);
     
     for (int i=0; i<strip_infos.size(); i++){
-        cout << strip_infos[i].head << " " << strip_infos[i].number << " " << strip_infos[i].index << endl;
-    }
-    
-    for (int i=0; i<strip_infos.size(); i++){
         answer.push_back(files[strip_infos[i].index]);
     }
     
