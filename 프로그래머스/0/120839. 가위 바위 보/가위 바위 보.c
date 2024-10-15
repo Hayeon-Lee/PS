@@ -8,7 +8,7 @@ char battle[6] = {'5', '0', '0', '0', '0', '2'};
 char* solution(const char* rsp) {
     // return 값은 malloc 등 동적 할당을 사용해주세요. 할당 길이는 상황에 맞게 변경해주세요.
     char* answer = (char*)malloc(strlen(rsp));
-    
+        
     for (int i=0; i<strlen(rsp); i++){
         char n = rsp[i];
         int int_n = atoi(&n);
