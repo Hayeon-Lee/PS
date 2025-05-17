@@ -1,21 +1,14 @@
 function solution(n) {
     
-    if(n==1) {
-        return '수';
-    }
-    if(n==2) {
-        return '수박';
-    }
+    var answer = '';
     
-    const repeat = parseInt(n/2);
-    let answer = ''
-    
-    for (let i=0; i<repeat; i++) {
-        answer += '수박';
+    if (n%2 == 0) {
+        for (let i=0; i<n/2; i++) answer += "수박";
+    }
+    else {
+        for (let i=0; i<~~(n/2); i++) answer += "수박";
+        answer += "수";
     }
     
-    if (n%2==0) return answer;
-    else return answer+'수';
-    
-    
+    return answer;
 }
